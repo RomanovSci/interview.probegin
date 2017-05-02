@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import validate from 'validate.js';
-import {rules} from './rules';
+import {
+    rules,
+    DESTROY_BY_TIME,
+    DESTROY_BY_VISIT
+} from './rules';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import crypto from 'crypto-js';
 import randomstring from 'randomstring';
@@ -23,6 +27,7 @@ export default class extends Component {
             password: '',
             confirmPassword: '',
             destroyMethod: '',
+            destroyOption: 1,
 
             accessToken: '',
         };
@@ -84,6 +89,7 @@ export default class extends Component {
                 'key': this.state.eKey,
                 'password': this.state.password,
                 'destroy_method': this.state.destroyMethod,
+                'destroy_option': this.state.destroyOption,
             },
             _csrf: CSRF_TOKEN,
         })
@@ -94,7 +100,11 @@ export default class extends Component {
                     this.setState({
                         accessToken: data.accessToken,
                     });
+
+                    return;
                 }
+
+                NotificationManager.error('Oppps...Something went wrong');
             });
     }
 
@@ -107,6 +117,23 @@ export default class extends Component {
         this.setState({
             [field]: e.target.value
         });
+    }
+
+    /**
+     * Render destroy option label
+     * @returns Sting
+     */
+    renderDestroyOptionLabel() {
+
+        if (this.state.destroyMethod == DESTROY_BY_TIME) {
+            return 'Hours';
+        }
+
+        if (this.state.destroyMethod == DESTROY_BY_VISIT) {
+            return 'Visit count';
+        }
+
+        return '';
     }
 
     render() {
@@ -162,10 +189,27 @@ export default class extends Component {
                                 onChange={this.changeHandler.bind(this, 'destroyMethod')}
                             >
                                 <option value="">Chose message destroy method</option>
-                                <option value="0">Destroy in an hour after the creation</option>
-                                <option value="1">Destroy after reading</option>
+                                <option value="0">Destroy by time after the creation</option>
+                                <option value="1">Destroy after link visit</option>
                             </select>
                         </div>
+                        {(() => {
+                            if (this.state.destroyMethod) {
+                                return (
+                                    <div className="form-group">
+                                        <label>{this.renderDestroyOptionLabel()}</label>
+                                        <input
+                                            type="number"
+                                            className="form-control col-10"
+                                            value={this.state.destroyOption}
+                                            onChange={this.changeHandler.bind(this, 'destroyOption')}
+                                        />
+                                    </div>
+                                );
+                            }
+
+                            return null;
+                        })()}
                         <input
                             type="submit"
                             className="btn btn-default"

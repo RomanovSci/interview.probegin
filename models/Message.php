@@ -4,6 +4,8 @@ namespace app\models;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\db\Query;
+use yii\db\QueryBuilder;
 use yii\web\Request;
 
 class Message extends ActiveRecord
@@ -11,7 +13,7 @@ class Message extends ActiveRecord
     public static $FAIL_RESPONSE = ['success' => false];
 
     const DESTROY_BY_TIME = 0;
-    const DESTROY_BY_READ = 1;
+    const DESTROY_BY_VISIT = 1;
 
     const ACCESS_TOKEN_LENGTH = 16;
 
@@ -48,11 +50,29 @@ class Message extends ActiveRecord
         return [
             [['message', 'key', 'password', 'destroy_method'], 'required'],
             [['message', 'key', 'password'], 'string'],
+            [['destroy_option', 'visit_count'], 'integer'],
+            ['destroy_option', 'integer', 'min' => 1],
+            ['visit_count', 'integer', 'min' => 0],
             ['destroy_method', 'in', 'range' => [
                 self::DESTROY_BY_TIME,
-                self::DESTROY_BY_READ,
+                self::DESTROY_BY_VISIT,
             ]]
         ];
+    }
+
+    public function getMinutesAfterCreating()
+    {
+        $value = (new Query())
+            ->select([
+                'diff' => 'TIME_TO_SEC(TIMEDIFF(NOW(), message.created_at)) / 60'
+            ])
+            ->from(self::tableName())
+            ->where([
+                'id' => $this->attributes['id']
+            ])
+            ->one();
+
+        return (float) $value['diff'];
     }
 
     /**
@@ -100,6 +120,21 @@ class Message extends ActiveRecord
             return self::$FAIL_RESPONSE;
         }
 
+        $attrs = $message->attributes;
+
+        /** Destroy message if visit count > destroy option */
+        if (
+            $attrs['destroy_method'] == self::DESTROY_BY_VISIT &&
+            $attrs['visit_count'] >= $attrs['destroy_option']
+        ) {
+            $message->delete();
+            return self::$FAIL_RESPONSE;
+        }
+
+        /** Update visits for current link */
+        $message->visit_count += 1;
+        $message->save();
+
         return ['success' => true];
     }
 
@@ -124,11 +159,6 @@ class Message extends ActiveRecord
             $message->attributes['password']
         )) {
             return self::$FAIL_RESPONSE;
-        }
-
-        /** If message should be remover after reading */
-        if ($message->attributes['destroy_method'] == self::DESTROY_BY_READ) {
-            $message->delete();
         }
 
         /** Return encrypted message */

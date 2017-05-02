@@ -2,6 +2,7 @@
 namespace app\commands;
 
 use \yii\console\Controller;
+use Carbon\Carbon;
 use \app\models\Message;
 
 class MsgController extends Controller
@@ -12,19 +13,15 @@ class MsgController extends Controller
      */
     public function actionDestroy()
     {
-        /**
-         * Select all messages where time
-         * since creation > one hour and where
-         * message has destroyByTime method
-         */
-        $messages = Message::find()
-            ->where(['destroy_method' => Message::DESTROY_BY_TIME])
-            ->andWhere(['>', 'TIME_TO_SEC(TIMEDIFF(NOW(), message.created_at))/60', 60])
-            ->all();
+        $messages = Message::findAll([
+            'destroy_method' => Message::DESTROY_BY_TIME
+        ]);
 
-        /** Destroy selected messages */
+        /** Remove old messages */
         foreach ($messages as $message) {
-           $message->delete();
+            if ($message->getMinutesAfterCreating() > (int) $message->attributes['destroy_option'] * 60) {
+                $message->delete();
+            }
         }
 
         return true;

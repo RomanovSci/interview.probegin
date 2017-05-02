@@ -1,5 +1,5 @@
-export const DESTROY_AFTER_HOUR = 0;
-export const DESTROY_AFTER_READ = 1;
+export const DESTROY_BY_TIME = 0;
+export const DESTROY_BY_VISIT = 1;
 export const rules =  {
     message: {
         presence: true,
@@ -22,5 +22,12 @@ export const rules =  {
     destroyMethod: {
         presence: true,
     },
+    destroyOption: {
+        presence: true,
+        numericality: {
+            onlyInteger: true,
+            greaterThan: 0,
+        },
+    }
 };
 
