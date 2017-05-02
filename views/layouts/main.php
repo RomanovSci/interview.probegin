@@ -1,6 +1,10 @@
 <?php
 
 use yii\helpers\Html;
+use app\assets\AppAsset;
+
+AppAsset::register($this);
+
 ?>
 <?php $this->beginPage() ?>
     <!DOCTYPE html>
@@ -20,6 +24,5 @@ use yii\helpers\Html;
 
     <?php $this->endBody() ?>
     </body>
-    <script src="/assets/bundle.js"></script>
     </html>
 <?php $this->endPage() ?>
