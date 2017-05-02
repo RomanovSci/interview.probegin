@@ -10,6 +10,6 @@
 * Create MYSQL database
 * Configure connection in `config/db.php` file
 * Apply migration with `php yii migrate` console command
-4) Setup shceduler for execution next command every 1 minute: `php $PATH_TO_PROJECT/yii msg/destroy`
+4) Setup scheduler for execution next command every 1 minute: `php $PATH_TO_PROJECT/yii msg/destroy`
 5) Build frontend: `npm run build`
 6) Run server: `php yii serve`
