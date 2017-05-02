@@ -92,20 +92,36 @@ export default class extends Component {
         }
 
         if (this.state.message) {
-            return <p>{this.state.message}</p>
+            return (
+                <div className="row">
+                    <div className="col-4">
+                        <p className="lead">{this.state.message}</p>
+                    </div>
+                </div>
+            );
         }
 
         return (
-            <div>
-                <form onSubmit={this.submit.bind(this)}>
-                    <input
-                        type="password"
-                        onChange={this.handleChangePass.bind(this)}
-                        value={this.state.password}
-                    />
-                    <input type="submit" value="Show message"/>
-                </form>
-                <NotificationContainer/>
+            <div className="row">
+                <div className="col-4">
+                    <form onSubmit={this.submit.bind(this)}>
+                        <div className="form-group">
+                            <label>Enter password for getting message</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                onChange={this.handleChangePass.bind(this)}
+                                value={this.state.password}
+                            />
+                        </div>
+                        <input
+                            type="submit"
+                            className="btn btn-default"
+                            value="Show message"
+                        />
+                    </form>
+                    <NotificationContainer/>
+                </div>
             </div>
         );
     }

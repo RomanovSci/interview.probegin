@@ -110,36 +110,70 @@ export default class extends Component {
     }
 
     render() {
+
         if (this.state.accessToken) {
-            return <p>{this.state.accessToken}</p>;
+            return (
+                <div>
+                    <h2>Link for message reading:</h2>
+                    <h3>{`${window.location.href}message/${this.state.accessToken}`}</h3>
+                </div>
+            );
         }
 
         return (
-            <div>
-                <form onSubmit={this.submit.bind(this)} >
-                    <input
-                        type="text"
-                        onChange={this.changeHandler.bind(this, 'message')}
-                        value={this.state.message}
-                    />
-                    <input
-                        type="password"
-                        onChange={this.changeHandler.bind(this, 'password')}
-                        value={this.state.password}
-                    />
-                    <input
-                        type="password"
-                        onChange={this.changeHandler.bind(this, 'confirmPassword')}
-                        value={this.state.confirmPassword}
-                    />
-                    <select onChange={this.changeHandler.bind(this, 'destroyMethod')}>
-                        <option value="">Chose message destroy method</option>
-                        <option value="0">By time</option>
-                        <option value="1">By read</option>
-                    </select>
-                    <input type="submit" value="Save message"/>
-                </form>
-                <NotificationContainer/>
+            <div className="row">
+                <div className="col-md-6">
+                    <form
+                        className="form-horizontal"
+                        onSubmit={this.submit.bind(this)}
+                    >
+                        <div className="form-group">
+                            <label className="control-label">Enter your message</label>
+                            <textarea
+                                type="text"
+                                className="form-control"
+                                placeholder="Message"
+                                onChange={this.changeHandler.bind(this, 'message')}
+                                value={this.state.message}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Enter password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                onChange={this.changeHandler.bind(this, 'password')}
+                                value={this.state.password}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Confirm password</label>
+                            <input
+                                type="password"
+                                className="form-control"
+                                onChange={this.changeHandler.bind(this, 'confirmPassword')}
+                                value={this.state.confirmPassword}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Message destroy method</label>
+                            <select
+                                className="form-control"
+                                onChange={this.changeHandler.bind(this, 'destroyMethod')}
+                            >
+                                <option value="">Chose message destroy method</option>
+                                <option value="0">Destroy in an hour after the creation</option>
+                                <option value="1">Destroy after reading</option>
+                            </select>
+                        </div>
+                        <input
+                            type="submit"
+                            className="btn btn-default"
+                            value="Save message"
+                        />
+                    </form>
+                    <NotificationContainer/>
+                </div>
             </div>
         );
     }

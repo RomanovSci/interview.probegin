@@ -7,11 +7,6 @@ export default class extends Component {
     }
 
     render() {
-        return (
-            <div>
-                <p>Main page from react</p>
-                <CreateMessageForm />
-            </div>
-        );
+        return <CreateMessageForm />
     }
 };
