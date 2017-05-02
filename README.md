@@ -4,8 +4,8 @@
 3) nodejs-6+
 
 ## How to run
-1) Check and install required packages: `php requirements.php`
-2) Install application dependencies: `composer install`
+1) Install application dependencies: `composer install`
+2) Check and install required packages: `php requirements.php`
 3) Configure DB:
 * Create MYSQL database
 * Configure connection in `config/db.php` file
