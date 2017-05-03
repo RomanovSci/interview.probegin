@@ -13,15 +13,15 @@ export default class extends Component {
     render() {
         return (
             <main className="main-content">
-                <h1>Ошибка 404</h1>
+                <h1>404</h1>
                 <div id="wrapper">
-                    <h2>Страница не найдена</h2>
+                    <h2>Page not found</h2>
                     <button
                         type="button"
                         className="btn btn-action"
                         onClick={() => {browserHistory.push('/')}}
                     >
-                        На главную
+                        Main page
                     </button>
                 </div>
             </main>
